@@ -3,6 +3,8 @@
 #include <windows.h>
 #include <GL/glut.h>
 #include <vector>
+#include <stdlib.h>
+
 using namespace std;
 
 void setColor(int colorIndex) {
@@ -37,7 +39,7 @@ void setColor(int colorIndex) {
 }
 
 void setShape(vector<float> vertices, int shapeIndex, int colorIndex, int size) {
-    glClear(GL_COLOR_BUFFER_BIT); // clear the color buffer with current clearing color
+    //glClear(GL_COLOR_BUFFER_BIT); // clear the color buffer with current clearing color
     switch (shapeIndex) {
         case 1:
             glBegin(GL_LINES);
@@ -63,6 +65,7 @@ void setShape(vector<float> vertices, int shapeIndex, int colorIndex, int size) 
 }
 
 void pass() { // input function
+    system("cls");
     cout << ".......... OpenGL CLI Sample ..........\n" << endl
          << "(1) Line" << endl
          << "(2) Triangle" << endl
@@ -166,7 +169,14 @@ void pass() { // input function
         }
         setShape(inputVertices, shapeIndex, colorIndex, numOfPoints * 2);
     }
-    cout << "Done!" << endl;
+
+    cout << "Do you want to continue [Y/n]?" << endl;
+    char temp;
+    cin >> temp;
+    if (temp == 'Y')
+        pass();
+    else
+        exit(0);
 }
 
 int main(int argc, char** argv) {
@@ -174,7 +184,7 @@ int main(int argc, char** argv) {
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("OpenGL Sample");
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // white background
+    //glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // white background
     glutDisplayFunc(pass);
     glLineWidth(3.0); // line width
     gluOrtho2D(-100, 100, -100, 100); // vertices x, y values | range (-100 ~ 100)
