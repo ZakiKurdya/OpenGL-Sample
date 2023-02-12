@@ -1,6 +1,6 @@
 # Basic Shapes with OpenGL
 
-This repository provides a simple C++ application for drawing basic shapes using [OpenGL library](https://www.opengl.org/).
+This repository provides a simple C++ application for drawing basic shapes using [OpenGL](https://www.opengl.org/) library.
 
 <div align="center">
 <br>
