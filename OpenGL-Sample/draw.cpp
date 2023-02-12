@@ -1,40 +1,44 @@
+#define _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+
 #include <iostream>
 #include <stdio.h>
 #include <windows.h>
 #include <GL/glut.h>
 #include <vector>
 #include <stdlib.h>
+#include <cmath>
 
 using namespace std;
 
 void setColor(int colorIndex) {
     switch (colorIndex) {
         case 1:
-            glColor3f(1.0f, 0.0f, 0.0f); // red
+            glColor3f(0.863f, 0.208f, 0.208f); // red
             break;
         case 2:
-            glColor3f(0.0f, 1.0f, 0.0f); // green
+            glColor3f(0.212f, 0.682f, 0.486f); // green
             break;
         case 3:
-            glColor3f(0.0f, 0.0f, 1.0f); // blue
+            glColor3f(0.094f, 0.455f, 0.596f); // blue
             break;
         case 4:
-            glColor3f(1.0f, 1.0f, 0.0f); // yellow
+            glColor3f(0.976f, 0.851f, 0.137f); // yellow
             break;
         case 5:
-            glColor3f(1.0f, 0.5f, 0.0f); // orange
+            glColor3f(1.0f, 0.545f, 0.075f); // orange
             break;
         case 6:
-            glColor3f(1.0f, 0.0f, 1.0f); // purple
+            glColor3f(0.961f, 0.431f, 0.702f); // pink
             break;
         case 7:
-            glColor3f(0.5f, 1.0f, 1.0f); // cyan
+            glColor3f(0.521f, 0.804f, 0.992f); // cyan
             break;
         case 8:
-            glColor3f(0.1f, 0.0f, 0.0f); // brown
+            glColor3f(0.651f, 0.294f, 0.165f); // brown
             break;
         default:
-            glColor3f(0.0f, 0.0f, 0.0f); // black
+            glColor3f(1.0f, 1.0f, 1.0f); // white
     }
 }
 
@@ -56,10 +60,20 @@ void setShape(vector<float> vertices, int shapeIndex, int colorIndex, int size) 
         case 5:
             glBegin(GL_LINE_STRIP);
             break;
+        case 6:
+            glBegin(GL_TRIANGLE_FAN);
+            break;
     }
     setColor(colorIndex);
-    for (int i = 0; i < size - 1; i += 2)
-        glVertex2f(vertices[i], vertices[i + 1]);
+    if (shapeIndex == 6) { // circle
+        glVertex2f(vertices[0], vertices[1]); // center
+        for (float i = 0.0f; i <= 360; i++)
+            glVertex2f(vertices[2] * cos(M_PI * i / 180.0) + vertices[0], vertices[2] * sin(M_PI * i / 180.0) + vertices[1]);
+    }
+    else {
+        for (int i = 0; i < size - 1; i += 2)
+            glVertex2f(vertices[i], vertices[i + 1]);
+    }
     glEnd();
     glFlush(); // render
 }
@@ -72,6 +86,7 @@ void pass() { // input function
          << "(3) Rectangle" << endl
          << "(4) Polygon" << endl
          << "(5) Polyline" << endl
+         << "(6) Circle" << endl
          << "--------------------" << endl
          << "(-1) Exit\n" << endl
          << "Shape index: ";
@@ -84,7 +99,7 @@ void pass() { // input function
          << "(3) Blue" << endl
          << "(4) Yellow" << endl
          << "(5) Orange" << endl
-         << "(6) Purple" << endl
+         << "(6) Pink" << endl
          << "(7) Cyan" << endl
          << "(8) Brown" << endl
          << "--------------------" << endl
@@ -108,7 +123,8 @@ void pass() { // input function
             inputVertices[i + 1] = in;
         }
         setShape(inputVertices, shapeIndex, colorIndex, 4);
-    } else if (shapeIndex == 2) {
+    } 
+    else if (shapeIndex == 2) {
         inputVertices.resize(6);
         for (int i = 0; i <= 4; i += 2) {
             cout << "Enter point - X: ";
@@ -119,7 +135,8 @@ void pass() { // input function
             inputVertices[i + 1] = in;
         }
         setShape(inputVertices, shapeIndex, colorIndex, 6);
-    } else if (shapeIndex == 3) {
+    } 
+    else if (shapeIndex == 3) {
         inputVertices.resize(8);
         cout << "Enter the location of bottom left corner point: " << endl;
         cout << "Enter point - X: ";
@@ -140,7 +157,8 @@ void pass() { // input function
         inputVertices[6] = inputVertices[0];
         inputVertices[7] = inputVertices[5];
         setShape(inputVertices, shapeIndex, colorIndex, 8);
-    } else if (shapeIndex == 4) {
+    } 
+    else if (shapeIndex == 4 || shapeIndex == 5) {
         cout << "Enter the number of points: ";
         int numOfPoints;
         cin >> numOfPoints;
@@ -154,20 +172,19 @@ void pass() { // input function
             inputVertices[i + 1] = in;
         }
         setShape(inputVertices, shapeIndex, colorIndex, numOfPoints * 2);
-    } else if (shapeIndex == 5) {
-        cout << "Enter the number of points: ";
-        int numOfPoints;
-        cin >> numOfPoints;
-        inputVertices.resize(numOfPoints * 2);
-        for (int i = 0; i <= numOfPoints * 2 - 2; i += 2) {
-            cout << "Enter point - X: ";
-            cin >> in;
-            inputVertices[i] = in;
-            cout << "Enter point - Y: ";
-            cin >> in;
-            inputVertices[i + 1] = in;
-        }
-        setShape(inputVertices, shapeIndex, colorIndex, numOfPoints * 2);
+    } 
+    else if (shapeIndex == 6) {
+        inputVertices.resize(3);
+        cout << "Enter point - X: ";
+        cin >> in;
+        inputVertices[0] = in;
+        cout << "Enter point - Y: ";
+        cin >> in;
+        inputVertices[1] = in;
+        cout << "Enter radius - r: ";
+        cin >> in;
+        inputVertices[2] = in;
+        setShape(inputVertices, shapeIndex, colorIndex, 1);
     }
 
     cout << "Do you want to continue [Y/n]?" << endl;
